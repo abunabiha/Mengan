@@ -1,0 +1,26 @@
+{
+  "name": "mengan-geh-profile",
+  "version": "1.0.0",
+  "description": "Website Profil Resmi Restoran Mengan Geh Bandar Lampung - Spesialis Seruit Tampah & Masakan Khas Lampung",
+  "main": "js/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve.js",
+    "test": "node --test tests/*.test.js",
+    "test:coverage": "node --test --experimental-test-coverage tests/*.test.js",
+    "lint": "node scripts/lint.js",
+    "validate": "node scripts/validate.js"
+  },
+  "keywords": [
+    "mengan-geh",
+    "lampung",
+    "seruit",
+    "kuliner-lampung",
+    "restoran",
+    "profil-usaha",
+    "sdlc",
+    "ci-cd"
+  ],
+  "author": "Mengan Geh Development Team",
+  "license": "MIT"
+}

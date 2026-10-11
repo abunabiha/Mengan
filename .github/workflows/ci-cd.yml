@@ -1,0 +1,99 @@
+name: CI/CD Pipeline - Mengan Geh Website
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # -------------------------------------------------------------
+  # STAGE 1: CODE QUALITY & LINTING
+  # -------------------------------------------------------------
+  lint-and-validate:
+    name: "Stage 1: Code Linting & Validation"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run Code Linter
+        run: npm run lint
+
+      - name: Run Integrity Validation
+        run: npm run validate
+
+  # -------------------------------------------------------------
+  # STAGE 2: CONTINUOUS INTEGRATION - AUTOMATED TESTING
+  # -------------------------------------------------------------
+  automated-tests:
+    name: "Stage 2: Automated Unit & QA Tests"
+    needs: lint-and-validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Execute Test Suite
+        run: npm test
+
+  # -------------------------------------------------------------
+  # STAGE 3: BUILD & ARTIFACT PREPARATION
+  # -------------------------------------------------------------
+  build-artifact:
+    name: "Stage 3: Build & Package Artifact"
+    needs: automated-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Prepare Distribution Folder
+        run: |
+          mkdir -p dist
+          cp -r index.html css js dist/
+          # Ensure docs are included in build for reference
+          mkdir -p dist/docs
+          cp docs/*.md dist/docs/ || true
+          echo "Build completed successfully on $(date)" > dist/build-info.txt
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  # -------------------------------------------------------------
+  # STAGE 4: CONTINUOUS DEPLOYMENT - GITHUB PAGES
+  # -------------------------------------------------------------
+  deploy-production:
+    name: "Stage 4: Automated Production Deployment"
+    needs: build-artifact
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
