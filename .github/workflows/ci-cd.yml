@@ -68,10 +68,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
       - name: Prepare Distribution Folder
         run: |
           mkdir -p dist
           cp -r index.html css js dist/
+          cp .nojekyll dist/.nojekyll || touch dist/.nojekyll
           # Ensure docs are included in build for reference
           mkdir -p dist/docs
           cp docs/*.md dist/docs/ || true
