@@ -55,7 +55,21 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`\n🚀 Server Mengan Geh aktif di: http://localhost:${PORT}`);
-  console.log(`Tekan Ctrl+C untuk menghentikan server.\n`);
+function startServer(port) {
+  server.listen(port, () => {
+    console.log(`\n🚀 Server Mengan Geh aktif di: http://localhost:${port}`);
+    console.log(`Tekan Ctrl+C untuk menghentikan server.\n`);
+  });
+}
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    const nextPort = 3030;
+    console.log(`⚠️  Port ${PORT} sedang digunakan oleh proses lain. Mengalihkan ke port ${nextPort}...`);
+    startServer(nextPort);
+  } else {
+    console.error('Server error:', err);
+  }
 });
+
+startServer(PORT);
