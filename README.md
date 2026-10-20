@@ -5,7 +5,7 @@
 [![Node.js Version](https://img.shields.io/badge/Node.js-v20%2B-brightgreen.svg)](https://nodejs.org)
 [![SDLC Methodology](https://img.shields.io/badge/SDLC-Agile%20Hybrid-blue.svg)](docs/SDLC_DOCUMENTATION.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-
+https://abunabiha.github.io/Mengan/#beranda
 ---
 
 ## 📌 1. Tentang Restoran Mengan Geh
